@@ -20,14 +20,14 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Инициализация таблицы
 const initDB = async () => {
-  await pool.query(\`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS reviews (
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       message TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-  \`);
+  `);
 };
 
 initDB().catch(err => console.error('Ошибка инициализации базы:', err));
@@ -56,5 +56,5 @@ app.post('/api/reviews', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(\`Сервер запущен: http://localhost:\${PORT}\`);
+  console.log(`Сервер запущен: http://localhost:${PORT}`);
 });
