@@ -29,7 +29,6 @@ const initDB = async () => {
     );
   `);
 };
-
 initDB().catch(err => console.error('Ошибка инициализации базы:', err));
 
 // Получение отзывов
