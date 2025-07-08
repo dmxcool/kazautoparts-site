@@ -1,6 +1,6 @@
 // Загрузка отзывов
 async function loadReviews() {
-  const res = await fetch('/api/reviews');
+  const res = await fetch('https://kazautoparts-backend.onrender.com/api/reviews');
   const reviews = await res.json();
 
   const reviewList = document.querySelector('.review-list');
@@ -24,12 +24,11 @@ form.addEventListener('submit', async (e) => {
 
   if (!name || !message) return;
 
-  await fetch('/api/reviews', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, message })
-  });
-
+ await fetch('https://kazautoparts-backend.onrender.com/api/reviews', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name, message })
+});
   form.reset();
   loadReviews();
 });
