@@ -1,12 +1,15 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const { Pool } = require('pg');
+require('dotenv').config({ path: path.join(__dirname, '.env') }); // 👈 ключевой момент
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Выводим DATABASE_URL в консоль для проверки
+console.log('DATABASE_URL:', process.env.DATABASE_URL);
 
 // PostgreSQL pool
 const pool = new Pool({
@@ -20,25 +23,32 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Инициализация таблицы
 const initDB = async () => {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS reviews (
-      id SERIAL PRIMARY KEY,
-      name TEXT NOT NULL,
-      message TEXT NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS reviews (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        message TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    console.log('Таблица отзывов готова');
+  } catch (err) {
+    console.error('Ошибка инициализации базы:', err);
+  }
 };
 
-initDB().catch(err => console.error('Ошибка инициализации базы:', err));
+initDB();
 
 // Получение отзывов
 app.get('/api/reviews', async (req, res) => {
   try {
-    const result = await pool.query('SELECT name, message, created_at FROM reviews ORDER BY created_at DESC LIMIT 100');
+    const result = await pool.query(
+      'SELECT name, message, created_at FROM reviews ORDER BY created_at DESC LIMIT 100'
+    );
     res.json(result.rows);
   } catch (err) {
-    res.status(500).send('Ошибка при получении отзывов');
+    res.status(500).json({ error: "Ошибка при получении отзывов" });
   }
 });
 
@@ -51,7 +61,7 @@ app.post('/api/reviews', async (req, res) => {
     await pool.query('INSERT INTO reviews (name, message) VALUES ($1, $2)', [name, message]);
     res.status(201).send('Отзыв сохранён');
   } catch (err) {
-    res.status(500).send('Ошибка при сохранении');
+  res.status(500).json({ error: "Ошибка при сохранении отзыва" });
   }
 });
 
