@@ -20,15 +20,16 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Инициализация таблицы
 const initDB = async () => {
- await pool.query(`
-  CREATE TABLE IF NOT EXISTS reviews (
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    message TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  );
-`);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS reviews (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      message TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
 };
+
 initDB().catch(err => console.error('Ошибка инициализации базы:', err));
 
 // Получение отзывов
