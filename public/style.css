@@ -11,7 +11,7 @@ body {
 
 header {
   position: relative;
-  background: url('/chinaparts.png') center/cover no-repeat;
+  background: url('images/chinaparts.png') center/cover no-repeat;
   color: white;
   height: 100vh;
   display: flex;
